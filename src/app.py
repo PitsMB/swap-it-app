@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
@@ -17,26 +17,26 @@ items = [
     }
 ]
 
-@app.route('/api/items', methods=['GET'])
+@app.route('/api/items')
 def get_items():
     return jsonify(items)
 
-@app.route('/api/items', methods=['POST'])
-def add_items():
-    item = request.get_json()
-    items.append(item)
-    return jsonify(items)
+@app.route('/api/items/<int:item_id>')
+def get_item_by_id(item_id):
+    return_id_value = {}
+    for id_to_find in items:
+        if id_to_find['id'] == item_id:
+            return_id_value = id_to_find
+    return jsonify(return_id_value)
 
-@app.route('/api/items/<item_id>', methods=['PUT'])
-def edit_items(item_id):
-    new_name = request.json['name']
-    new_item = {
-        "id": item_id,
-        "name": new_name
-    }
-
+@app.route('/api/items/<string:item_name>')
+def get_item_by_name(item_name):
+    return_name_value = {}
+    for name_to_find in items:
+        if name_to_find['name'] == item_name:
+            return_name_value = name_to_find
+    return jsonify(return_name_value)
     
-    return jsonify(items)
 
 if __name__ == '__main__':
     app.run(debug=True)
